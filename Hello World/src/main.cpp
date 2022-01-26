@@ -36,17 +36,21 @@ using namespace std;
 
 #include <cmath>
 #define CMTOIN 2.54;
-const double WHEELTRACK {28};
+const double WHEELTRACK {28.2};
 const double WHEELDIAM {10.16};
 
-void drive(double targetDistance, double speed){
-  MotorL.rotateTo((targetDistance / M_PI / WHEELDIAM * 360 * 5), degrees, speed, dps, false);
-  MotorR.rotateTo((targetDistance / M_PI / WHEELDIAM * 360 * 5), degrees, speed, dps);
+void drive(double targetDistance, double speed = 600, rotationUnits unit = degrees){
+  MotorL.rotateTo(targetDistance, unit, speed, dps, false);
+  MotorR.rotateTo(targetDistance, unit, speed, dps);
   MotorL.resetRotation();
   MotorR.resetRotation();
 }
 
-void turn(double targetAngle, double speed){
+void driveDistance(double targetDistance, double speed){
+  drive(targetDistance / M_PI / WHEELDIAM * 360 * 5, speed);
+}
+
+void turn(double targetAngle, double speed = 600){
   MotorL.rotateTo((targetAngle*WHEELTRACK/WHEELDIAM*5), degrees, speed, dps, false);
   MotorR.rotateTo(-(targetAngle*WHEELTRACK/WHEELDIAM*5), degrees, speed, dps);
   MotorL.resetRotation();
@@ -56,8 +60,16 @@ void turn(double targetAngle, double speed){
 void driveSquare(double squareDistance, double speed){
   for(int i = 0; i<4; i++)
   {
-  drive(squareDistance, speed);
+  driveDistance(squareDistance, speed);
   turn(90, speed);
+  }
+
+}
+void driveStar(double squareDistance, double speed){
+  for(int i = 0; i<5; i++)
+  {
+  driveDistance(squareDistance, speed);
+  turn(144, speed);
   }
 
 }
@@ -84,9 +96,56 @@ int main() {
   //MotorR.resetRotation();
   //MotorL.rotateTo((targetAngle*wheelTrack/wheelDiam*5), degrees, 360, dps, false);
   //MotorR.rotateTo(-(targetAngle*wheelTrack/wheelDiam*5), degrees, 360, dps);
-driveSquare(squareDistance, speed);
+//driveSquare(squareDistance, speed);
   //make a square
-  Controller1.ButtonA.pressed();
+  /*int degrees = 0;
+  bool wasPressed = false;
+  while(true){
+    bool isPressed = Controller1.ButtonY.pressing();
+    if(isPressed){
+      MotorL.spin(fwd);           
+     MotorR.spin(fwd);
+    }else{
+      MotorR.stop();
+      MotorL.stop();
+    }
+    if(wasPressed && !isPressed)
+    {
+        Brain.Screen.print(MotorL.position(turns));
+        Brain.Screen.print (" ");
+        MotorL.resetRotation();
+    }
+    wasPressed = isPressed;
+    task::sleep(50);
+    
+  }*/
+  while(true){
+    if(Controller1.ButtonA.pressing()){
+  drive(9.34, 600, turns);
+  turn(90);
+  drive(-2,600, turns);
+  turn(-185);
+  drive(10.5, 600, turns);
+  turn(-81);
+  drive(-6.58, 600, turns);
+  turn(73);
+  drive(-2,600,turns);
+  turn(15);
+  drive(-2,600,turns);
+  }
+  }
+
+  /*while(true){
+    if(Controller1.ButtonA.pressing())
+  for(int c = 0; c < 6; c++){
+      driveSquare(squareDistance, speed);
+  }
+  if(Controller1.ButtonB.pressing())
+  for(int c = 0; c < 5; c++){
+      driveStar(squareDistance, speed);
+  }
+  }*/
+
   
 
   
