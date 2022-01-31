@@ -6,6 +6,7 @@ extern brain Brain;
 extern controller Controller1;
 extern motor MotorL;
 extern motor MotorR;
+extern sonar RangeFinderE;
 
 /**
  * Used to initialize code/tasks/devices added using tools in VEXcode Pro.

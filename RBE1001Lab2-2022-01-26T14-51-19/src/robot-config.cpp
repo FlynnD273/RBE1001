@@ -9,8 +9,9 @@ brain  Brain;
 
 // VEXcode device constructors
 controller Controller1 = controller(primary);
-motor MotorL = motor(PORT10, ratio18_1, false);
+motor MotorL = motor(PORT10, ratio18_1, true);
 motor MotorR = motor(PORT1, ratio18_1, false);
+sonar RangeFinderE = sonar(Brain.ThreeWirePort.E);
 
 // VEXcode generated functions
 // define variable for remote controller enable/disable
