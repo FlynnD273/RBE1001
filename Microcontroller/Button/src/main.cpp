@@ -53,9 +53,8 @@ void loop()
       Serial.println("Button press -> ACTIVE");
 
       // Turn the LED on
-      digitalWrite(LED_PIN, HIGH);
-      //analogWrite(LED_PIN, 180);
-
+      // digitalWrite(LED_PIN, HIGH);
+      // analogWrite(LED_PIN, 180);
       Serial.println(++count);
       // Finally, update the state
       state = SYS_ACTIVE;
@@ -71,14 +70,15 @@ void loop()
       Serial.println("Button press -> IDLE");
 
       // Turn the LED off
-      digitalWrite(LED_PIN, LOW);
-      //analogWrite(LED_PIN, 80);
+      // digitalWrite(LED_PIN, LOW);
+      // analogWrite(LED_PIN, 80);
 
       // Finally, update the state
       state = SYS_IDLE;
     }
 
-    // Serial.println(analogRead(POT_PIN));
-    // delay(200);
+    Serial.println(analogRead(POT_PIN));
+    delay(200);
   }
+  analogWrite(LED_PIN, analogRead(POT_PIN) / 16);
 }
