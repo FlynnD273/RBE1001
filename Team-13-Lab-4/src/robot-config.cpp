@@ -9,8 +9,12 @@ brain  Brain;
 
 // VEXcode device constructors
 /*vex-vision-config:begin*/
-vision Vision17 = vision (PORT17, 50);
+signature VisionSensor__GREEN_BALL = signature (1, -7213, -4867, -6040, -1, 533, 266, 4.1, 0);
+signature VisionSensor__SIG_2 = signature (2, 0, 0, 0, 0, 0, 0, 3, 0);
+vision VisionSensor = vision (PORT17, 50, VisionSensor__GREEN_BALL, VisionSensor__SIG_2);
 /*vex-vision-config:end*/
+motor MotorR = motor(PORT1, ratio18_1, false);
+motor MotorL = motor(PORT10, ratio18_1, true);
 
 // VEXcode generated functions
 
