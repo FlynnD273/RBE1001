@@ -1,19 +1,22 @@
 #include <Arduino.h>
-#include <Servo.h>
+#include <RBE1001Lib.h>
+#include <ESP32Servo.h>
+#include <button.h>
 
 //define the states in easy-to-read terms
 enum {ALARM_OFF, ALARM_ARMED, ALARM_INTRUDER};
 int currentState = ALARM_OFF; //start off with the alarm deactivated
+Servo secServo;
+
+Button armButton(BOOT_FLAG_PIN);
 
 //Some pin definitions:
-const int buttonArmingPin = 32;
+// const int buttonArmingPin = 32;
 const int buttonDisarmingPin = 33;
 const int photoPin  = 27;
 const int piezoPin  = 26;
 const int ledPin    = 14;
 const int servoPin  = 25;
-Servo secServo;
-  secServo.attach(servoPin);
 
 
 void HandleArmingButton(void)
@@ -23,11 +26,11 @@ void HandleArmingButton(void)
     Serial.println("Arming!");
 
     //take action: light the LED
-    digitalWrite(ledPin, HIGH);    
+    digitalWrite(ledPin, HIGH);
 
     //take action: you get to ADD CODE HERE to move the servo!
-    secServo.write(45);
-    
+    secServo.write(135);
+    delay(100);
     currentState = ALARM_ARMED; //Don't forget to change the state!
   //}
 }
@@ -35,13 +38,11 @@ void HandleArmingButton(void)
 void HandleLaserBroken(void)
 {
   Serial.println("Tripped!");
-  digitalWrite(ledPin, HIGH);
-  delay(1);
-  digitalWrite(ledPin, LOW);
-  delay(1);
-  digitalWrite(ledPin, HIGH);
+  tone(piezoPin, 440);
+  // digitalWrite(ledPin, LOW);
+  // delay(500);
+  // digitalWrite(ledPin, HIGH);
   currentState = ALARM_INTRUDER;
-
 }
 
 void HandleDisarmingButton(void)
@@ -49,6 +50,7 @@ void HandleDisarmingButton(void)
   Serial.println("Disarming!");
   digitalWrite(ledPin, LOW);
   secServo.write(0);
+  noTone(piezoPin);
   currentState = ALARM_OFF;
 }
 
@@ -57,25 +59,13 @@ void HandleDisarmingButton(void)
  */
 bool CheckArmingButton(void)
 {
-  static int prevButtonState = HIGH; //button up => pin reads HIGH
-
-  bool retVal = false;
-  
-  int currButtonState = digitalRead(buttonArmingPin);
-  if(prevButtonState != currButtonState && currentState == ALARM_OFF)
-  {
-    delay(10); //this is a cheat for debouncing -- the only place delay is allowed!
-    if(currButtonState == LOW) retVal = true;  //button is down => pin reads LOW
-  }
-  prevButtonState = currButtonState;
-
-  return retVal;
+  return armButton.CheckButtonPress() && currentState == ALARM_OFF;
 }
 
 /*
  * Code for checking the laser. YOU WILL NEED TO EDIT THIS ONE
  */
-enum {DARK, LIGHT};
+enum {LIGHT, DARK};
 
 bool CheckIfLaserBroken(void)
 {
@@ -83,12 +73,19 @@ bool CheckIfLaserBroken(void)
   bool retVal = false;
 
   //add code here to detect the EVENT of the laser being broken. See the button checker above for hints
-  int currLaserSensorState = digitalRead(photoPin);
-  if(currLaserSensorState != prevLaserSensorState && currentState == ALARM_ARMED)
+  int currLaserSensorState = prevLaserSensorState;
+
+  int lightLevel = analogRead(photoPin);
+  if (lightLevel < 2000) currLaserSensorState = LIGHT;
+
+  if (lightLevel > 2200) currLaserSensorState = DARK;
+
+  if(currentState == ALARM_ARMED && currLaserSensorState == DARK && prevLaserSensorState == LIGHT)
   {
     retVal = true;
   }
   
+  prevLaserSensorState = currLaserSensorState;
   return retVal;
 }
 
@@ -98,16 +95,16 @@ bool CheckIfLaserBroken(void)
 
 bool CheckDisarmingButton(void) 
 {
+  static int prevButtonState = 0;
+
   bool retVal = false;
   int currButtonState = digitalRead(buttonDisarmingPin);
-  if(prevButtonState != currButtonState)
+  if((currentState == ALARM_ARMED || currentState == ALARM_INTRUDER) && prevButtonState != currButtonState)
   {
-    if(currentState == ALARM_ARMED || currentState == ALARM_INTRUDER)
-    {
-        if(currButtonState == LOW) retVal = true;
-    }
+      if(currButtonState == LOW) retVal = true;
   }
 
+  prevButtonState = currButtonState;
   return retVal;
 }
 
@@ -116,13 +113,14 @@ void setup(void)
   Serial.begin(115200);
   Serial.println("Hello!");
 
-  pinMode(buttonArmingPin, INPUT_PULLUP); //if we use INPUT_PULLUP, we don't have to have an external pullup resistor
+  secServo.attach(servoPin);
+  secServo.write(0);
+
+  // pinMode(buttonArmingPin, INPUT_PULLUP); //if we use INPUT_PULLUP, we don't have to have an external pullup resistor
   pinMode(buttonDisarmingPin, INPUT_PULLUP); //if we use INPUT_PULLUP, we don't have to have an external pullup resistor
   pinMode(photoPin, INPUT);
   pinMode(piezoPin, OUTPUT);
   pinMode(ledPin, OUTPUT);
-  
-  secServo.write(0);
 
 
   delay(500);
@@ -135,7 +133,7 @@ void loop(void)
  * Our loop() is just a set of checker-handler pairs.
  */
 {
-  if(CheckArmingButton()) HandleArmingButton();
   if(CheckIfLaserBroken()) HandleLaserBroken();
   if(CheckDisarmingButton()) HandleDisarmingButton();
+  if(CheckArmingButton()) HandleArmingButton();
 }
