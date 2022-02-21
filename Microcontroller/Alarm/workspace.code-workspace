@@ -1,0 +1,12 @@
+{
+	"folders": [
+		{
+			"path": "..\\activity02.night-light"
+		},
+		{
+			"name": "adcTest",
+			"path": "..\\..\\..\\..\\PlatformIO\\Projects\\adcTest"
+		}
+	],
+	"settings": {}
+}
