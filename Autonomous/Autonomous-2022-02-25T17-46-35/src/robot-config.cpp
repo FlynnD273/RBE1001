@@ -22,14 +22,15 @@ line LineR = line(Brain.ThreeWirePort.B);
 line LineL = line(Brain.ThreeWirePort.A);
 sonar RangeR = sonar(Brain.ThreeWirePort.G);
 /*vex-vision-config:begin*/
-signature VisionF__ORANGE_DARK = signature (1, 0, 0, 0, 0, 0, 0, 3, 1);
-signature VisionF__YELLOW_ALL = signature (2, 0, 0, 0, 0, 0, 0, 3, 1);
-signature VisionF__ORANGE_LIGHT = signature (3, 0, 0, 0, 0, 0, 0, 3, 0);
-signature VisionF__SIG_4 = signature (4, -173, 171, -1, -2929, -2671, -2800, 6.6, 1);
-signature VisionF__SIG_5 = signature (5, 3835, 4177, 4006, -2529, -2265, -2397, 7.4, 1);
-code VisionF__DORM1 = code (VisionF__SIG_4, VisionF__SIG_5 );
-code VisionF__DORM2 = code (VisionF__ORANGE_DARK, VisionF__YELLOW_ALL );
-vision VisionF = vision (PORT15, 42, VisionF__ORANGE_DARK, VisionF__YELLOW_ALL, VisionF__ORANGE_LIGHT, VisionF__SIG_4, VisionF__SIG_5);
+signature VisionF__RED_MARKER = signature (1, 7965, 8377, 8171, -237, 231, -3, 5.3, 1);
+signature VisionF__YELLOW_MARKER = signature (2, 1061, 1381, 1221, -3795, -3533, -3664, 8.2, 1);
+signature VisionF__SIG_3 = signature (3, 0, 0, 0, 0, 0, 0, 3, 0);
+signature VisionF__SIG_4 = signature (4, 0, 0, 0, 0, 0, 0, 3, 0);
+signature VisionF__SIG_5 = signature (5, 0, 0, 0, 0, 0, 0, 3, 0);
+signature VisionF__SIG_6 = signature (6, 0, 0, 0, 0, 0, 0, 3, 0);
+signature VisionF__SIG_7 = signature (7, 0, 0, 0, 0, 0, 0, 3, 0);
+code VisionF__DORM = code (VisionF__RED_MARKER, VisionF__YELLOW_MARKER );
+vision VisionF = vision (PORT15, 42, VisionF__RED_MARKER, VisionF__YELLOW_MARKER, VisionF__SIG_3, VisionF__SIG_4, VisionF__SIG_5, VisionF__SIG_6, VisionF__SIG_7);
 /*vex-vision-config:end*/
 
 // VEXcode generated functions
