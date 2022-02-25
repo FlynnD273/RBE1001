@@ -22,7 +22,13 @@ line LineR = line(Brain.ThreeWirePort.B);
 line LineL = line(Brain.ThreeWirePort.A);
 sonar RangeR = sonar(Brain.ThreeWirePort.G);
 /*vex-vision-config:begin*/
-vision VisionF = vision (PORT15, 50);
+signature VisionF__ORANGE_DARK = signature (1, 8649, 9051, 8850, -1733, -1473, -1603, 9.9, 1);
+signature VisionF__YELLOW_ALL = signature (2, -1, 961, 480, -4509, -3233, -3871, 3, 1);
+signature VisionF__ORANGE_LIGHT = signature (3, 8809, 9959, 9384, -2455, -1171, -1813, 10, 1);
+signature VisionF__SIG_4 = signature (4, 0, 0, 0, 0, 0, 0, 3, 0);
+code VisionF__DORM1 = code (VisionF__ORANGE_LIGHT, VisionF__YELLOW_ALL );
+code VisionF__DORM2 = code (VisionF__ORANGE_DARK, VisionF__YELLOW_ALL );
+vision VisionF = vision (PORT15, 19, VisionF__ORANGE_DARK, VisionF__YELLOW_ALL, VisionF__ORANGE_LIGHT, VisionF__SIG_4);
 /*vex-vision-config:end*/
 
 // VEXcode generated functions

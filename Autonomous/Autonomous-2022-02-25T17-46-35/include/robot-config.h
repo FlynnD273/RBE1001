@@ -3,6 +3,7 @@ using namespace vex;
 extern brain Brain;
 
 using signature = vision::signature;
+using code = vision::code;
 
 // VEXcode devices
 extern motor_group MotorsR;
@@ -12,13 +13,15 @@ extern motor MotorC;
 extern line LineR;
 extern line LineL;
 extern sonar RangeR;
-extern signature VisionF__SIG_1;
-extern signature VisionF__SIG_2;
-extern signature VisionF__SIG_3;
+extern signature VisionF__ORANGE_DARK;
+extern signature VisionF__YELLOW_ALL;
+extern signature VisionF__ORANGE_LIGHT;
 extern signature VisionF__SIG_4;
 extern signature VisionF__SIG_5;
 extern signature VisionF__SIG_6;
 extern signature VisionF__SIG_7;
+extern code VisionF__DORM1;
+extern code VisionF__DORM2;
 extern vision VisionF;
 
 /**
