@@ -8,8 +8,8 @@ using code = vision::code;
 // VEXcode devices
 extern motor_group MotorsR;
 extern motor_group MotorsL;
-extern motor_group MotorsB;
-extern motor MotorC;
+extern motor_group MotorsLifter;
+extern motor MotorClaw;
 extern line LineR;
 extern line LineL;
 extern sonar RangeR;
