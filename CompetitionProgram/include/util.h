@@ -15,6 +15,22 @@ void turn(double, double);
 
 void liftToFloor(int);
 
+void openClaw();
+
+void closeClaw();
+
+void openClawL();
+
+void DetermineEffort();
+
+void BlackLineTracking();
+
+void WhiteLineTracking();
+
+void RampToDorm();
+
+void DriveUntilWhite(bool isForwards);
+
 bool tryDetectObject(vex::vision::object&, vex::vision::signature);
 
 enum trackColorState {SUCCESSFUL, PENDING, LOST};

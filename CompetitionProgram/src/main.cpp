@@ -11,6 +11,10 @@
 // ---- END VEXCODE CONFIGURED DEVICES ----
 
 #include "vex.h"
+#include <iostream>
+#include <cmath>
+using namespace std;
+
 
 using namespace vex;
 
@@ -51,6 +55,18 @@ void autonomous(void) {
   // ..........................................................................
   // Insert autonomous user code here.
   // ..........................................................................
+  closeClaw();
+  openClaw();
+  // liftToFloor(2);
+  // BlackLineTracking();
+  // RampToDorm();
+  // DriveUntilWhite(false);
+  // driveDistance(2,150);
+  // turn(40, 150);
+  // WhiteLineTracking();
+  // liftToFloor(3);
+  // driveDistance(7,150);
+  // turn(90,150);
 }
 
 /*---------------------------------------------------------------------------*/

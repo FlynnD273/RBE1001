@@ -80,7 +80,7 @@ void moveClaw ()
 {
   if (clawToggler.getValue(Controller1.ButtonR1.pressing()))
   {
-    Claw.rotateTo(100, degrees, 600, dps, false);
+    Claw.rotateTo(80, degrees, 600, dps, false);
   }
   else
   {

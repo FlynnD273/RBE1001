@@ -29,6 +29,8 @@ void driveRotations(double rotationDegrees, double speed = 600, rotationUnits un
 {
   Left.resetRotation();
   Right.resetRotation();
+  Right.spin(fwd);
+  Left.spin(fwd);
   Left.rotateTo(rotationDegrees, unit, speed, dps, false);
   Right.rotateTo(rotationDegrees, unit, speed, dps);
 }
@@ -51,6 +53,135 @@ void liftToFloor(int index)
   if (index >= LIFT_LEVEL_COUNT || index < 0) return;
 
   Lift.rotateTo(LIFT_HEIGHTS[index], degrees, 500, dps, false);
+}
+
+void openClaw ()
+{
+  Claw.rotateTo(0, degrees, 600, dps, false);
+}
+
+void openClawL ()
+{
+  Claw.rotateTo(70, degrees, 600, dps, false);
+}
+
+void closeClaw ()
+{
+  Claw.rotateTo(100, degrees, 600, dps, false);
+}
+
+double speed = 20;
+
+double DetermineEffort(double actual) 
+ {
+
+    double KP = 0.02; // .35
+    double desired = 90;  
+    double error = desired - actual;
+    double effort = KP * error;
+    return effort;
+}
+
+void BlackLineTracking ()
+{ 
+    while(true)
+    {
+      task::sleep(100);
+       
+      float rL = LineTrackerB.reflectivity();
+      float rR = LineTrackerA.reflectivity(); 
+      //cout << "A is " << rR << endl;
+      //cout << "B is " << rL << endl;
+    
+        if(rR > 12 && rL > 12)
+        {
+            Right.spin(fwd, speed, rpm);
+            Left.spin(fwd, speed, rpm);
+        }
+        else if(rL > 12)
+        {
+            Left.spin(reverse, speed/2 + DetermineEffort(rL), rpm);
+            Right.spin(fwd, speed/2.5 + DetermineEffort(rR), rpm);
+        }
+        else if(rR > 12)
+        {
+            Right.spin(reverse, speed/2 + DetermineEffort(rR), rpm);
+            Left.spin(fwd, speed/2.5 + DetermineEffort(rL), rpm);
+        }
+        else
+        { 
+          Right.stop();
+          Left.stop();
+          break;
+        }
+    }
+}
+
+void WhiteLineTracking ()
+{ 
+    while(true)
+    {
+      task::sleep(100);
+      float rL = LineTrackerB.reflectivity();
+      float rR = LineTrackerA.reflectivity(); 
+      //cout << "A is " << rR << endl;
+      //cout << "B is " << rL << endl;
+    
+        if(rR < 12 && rL < 12)
+        {
+            Left.spin(fwd, speed, rpm);
+            Right.spin(fwd, speed, rpm);
+        }
+        else if(rR < 12)
+        {
+            Left.spin(reverse, speed/2 + DetermineEffort(rL), rpm);
+            Right.spin(fwd, speed/2.5 + DetermineEffort(rR), rpm);
+        }
+        else if(rL < 12)
+        {
+            Right.spin(reverse, speed/2 + DetermineEffort(rR), rpm);
+            Left.spin(fwd, speed/2.5 + DetermineEffort(rL), rpm);
+        }
+        else
+        { 
+          Right.stop();
+          Left.stop();
+          break;
+        }
+    }
+}
+
+void RampToDorm()
+{ 
+  driveDistance(75, 250);
+  openClawL();
+        
+}
+
+void DriveUntilWhite(bool isForwards)
+{
+  float rL = LineTrackerB.reflectivity();
+  float rR = LineTrackerA.reflectivity(); 
+  if(!isForwards)
+  {
+    while (rR < 12 && rL < 12)
+  {
+    rL = LineTrackerB.reflectivity();
+    rR = LineTrackerA.reflectivity(); 
+    Right.spin(reverse, speed, rpm);
+    Left.spin(reverse, speed, rpm);
+  }
+  }else{
+  while (rR < 12 && rL < 12)
+  {
+    rL = LineTrackerB.reflectivity();
+    rR = LineTrackerA.reflectivity(); 
+    Right.spin(fwd, speed, rpm);
+    Left.spin(fwd, speed, rpm);
+  }
+  }
+  Right.stop();
+  Left.stop();
 }
 
 bool tryDetectObject(vex::vision::object& detectedObj, signature sig)
