@@ -95,7 +95,7 @@ int main() {
   while (true)
   {
     vex::vision::object obj;
-    if (tryDetectObject(obj) && obj.width > 2 && obj.height > 2)
+    if (tryDetectObject(obj) && obj.width > 4 && obj.height > 4)
     {
       const double rotationPower = (obj.centerX - CAM_WIDTH / 2) * K_PR;
       const double drivePower = (TARGET_BALL_WIDTH - obj.width) * K_PD;
@@ -108,6 +108,6 @@ int main() {
       MotorL.setVelocity(0, rpm);
       MotorR.setVelocity(0, rpm);
     }
-    wait(250, msec);
+    wait(50, msec);
   }
 }

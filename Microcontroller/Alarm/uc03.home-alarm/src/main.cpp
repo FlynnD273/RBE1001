@@ -76,9 +76,9 @@ bool CheckIfLaserBroken(void)
   int currLaserSensorState = prevLaserSensorState;
 
   int lightLevel = analogRead(photoPin);
-  if (lightLevel < 2000) currLaserSensorState = LIGHT;
+  if (lightLevel < 2900) currLaserSensorState = LIGHT;
 
-  if (lightLevel > 2200) currLaserSensorState = DARK;
+  if (lightLevel > 3000) currLaserSensorState = DARK;
 
   if(currentState == ALARM_ARMED && currLaserSensorState == DARK && prevLaserSensorState == LIGHT)
   {
@@ -133,7 +133,10 @@ void loop(void)
  * Our loop() is just a set of checker-handler pairs.
  */
 {
+  // int lightLevel = analogRead(photoPin);
+  // Serial.println(lightLevel);
   if(CheckIfLaserBroken()) HandleLaserBroken();
   if(CheckDisarmingButton()) HandleDisarmingButton();
   if(CheckArmingButton()) HandleArmingButton();
+  
 }
