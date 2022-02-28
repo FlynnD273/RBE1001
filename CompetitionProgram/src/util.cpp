@@ -25,16 +25,17 @@ bool Toggler::getValue (bool state)
   return value;
 }
 
-void drive(double targetDistance, double speed = 600, rotationUnits unit = degrees)
+void driveDegrees(double rotationDegrees, double speed = 600, rotationUnits unit = degrees)
 {
   Left.resetRotation();
   Right.resetRotation();
-  Left.rotateTo(targetDistance, unit, speed, dps, false);
-  Right.rotateTo(targetDistance, unit, speed, dps);
+  Left.rotateTo(rotationDegrees, unit, speed, dps, false);
+  Right.rotateTo(rotationDegrees, unit, speed, dps);
 }
 
-void driveDistance(double targetDistance, double speed){
-  drive(targetDistance / M_PI / WHEEL_DIAM * 360, speed);
+void driveDistance(double targetDistance, double speed = 600)
+{
+  driveDegrees(targetDistance / M_PI / WHEEL_DIAM * 360, speed);
 }
 
 void turn(double targetAngle, double speed = 600)
@@ -69,7 +70,6 @@ bool tryDetectObject(vex::vision::object& detectedObj, signature sig)
   return false;
 }
 
-enum trackColorState {SUCCESSFUL, PENDING, LOST};
 
 trackColorState trackColor(signature sig, double width, double distance, double horizontalThreshold, double sizeThreshold)
 {

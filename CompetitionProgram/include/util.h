@@ -7,10 +7,16 @@ const int LIFT_LEVEL_COUNT = sizeof(LIFT_HEIGHTS)/sizeof(LIFT_HEIGHTS[0]);
 
 class Toggler { bool value; bool prevState; public : bool getValue(); public : bool getValue(bool); };
 
-void drive(double, double, rotationUnits);
+void driveRotations(double, double, rotationUnits);
 
 void driveDistance(double, double);
 
 void turn(double, double);
 
 void liftToFloor(int);
+
+bool tryDetectObject(vex::vision::object&, vex::vision::signature);
+
+enum trackColorState {SUCCESSFUL, PENDING, LOST};
+
+trackColorState trackColor(vex::vision::signature, double, double, double, double);
