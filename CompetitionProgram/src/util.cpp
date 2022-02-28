@@ -25,7 +25,7 @@ bool Toggler::getValue (bool state)
   return value;
 }
 
-void driveDegrees(double rotationDegrees, double speed = 600, rotationUnits unit = degrees)
+void driveRotations(double rotationDegrees, double speed = 600, rotationUnits unit = degrees)
 {
   Left.resetRotation();
   Right.resetRotation();
@@ -35,7 +35,7 @@ void driveDegrees(double rotationDegrees, double speed = 600, rotationUnits unit
 
 void driveDistance(double targetDistance, double speed = 600)
 {
-  driveDegrees(targetDistance / M_PI / WHEEL_DIAM * 360, speed);
+  driveRotations(targetDistance / M_PI / WHEEL_DIAM * 360, speed);
 }
 
 void turn(double targetAngle, double speed = 600)
