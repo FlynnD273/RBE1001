@@ -179,15 +179,9 @@
 
 #include "vex.h"
 #include <iostream>
-#include <cmath>
 using namespace std;
 
 using namespace vex;
-
-bool isLifterAuto = true;
-int levelIndex = 0;
-bool arrowPressed = false;
-Toggler clawToggler = Toggler();
 
 int main() 
 {
@@ -199,89 +193,8 @@ int main()
 
   while (true)
   {
-    double forward = Controller1.Axis2.position(percent);
-    double turn = Controller1.Axis1.position(percent) / 3;
-
-    Left.setVelocity(forward + turn, percent);
-    Right.setVelocity(forward - turn, percent);
-
-    if (!arrowPressed)
-    {
-      if (Controller1.ButtonUp.pressing() && levelIndex < LIFT_LEVEL_COUNT - 1)
-      {
-        arrowPressed = true;
-        if (levelIndex < LIFT_LEVEL_COUNT - 1)
-        {
-          liftToFloor(++levelIndex);
-        }
-        else if (!isLifterAuto)
-        {
-          liftToFloor(levelIndex);
-        }
-        isLifterAuto = true;
-      }
-      else if (Controller1.ButtonDown.pressing())
-      {
-        arrowPressed = true;
-        if (levelIndex > 0)
-        {
-          liftToFloor(--levelIndex);
-        }
-        else if (!isLifterAuto)
-        {
-          liftToFloor(levelIndex);
-        }
-        isLifterAuto = true;
-      }
-    }
-    else if (!Controller1.ButtonDown.pressing() && !Controller1.ButtonUp.pressing())
-    {
-      arrowPressed = false;
-    }
-
-    if (clawToggler.getValue(Controller1.ButtonR1.pressing()))
-    {
-      // Claw.stop();
-      // Claw.spin(fwd);
-      // Claw.setVelocity(600, dps);
-      Claw.rotateTo(100, degrees, 600, dps, false);
-    }
-    else
-    {
-      Claw.rotateTo(0, degrees, 600, dps, false);
-    }
-
-    if (abs(Controller1.Axis3.position(percent)) > 10 && isLifterAuto)
-    {
-      Lift.stop();
-      Lift.spin(fwd);
-      isLifterAuto = false;
-    }
-
-    if (!isLifterAuto)
-    {
-      Lift.setVelocity(Controller1.Axis3.position(percent) / 5, percent);
-
-      if (levelIndex < LIFT_LEVEL_COUNT - 1 && LIFT_HEIGHTS[levelIndex + 1] < Lift.position(degrees))
-      {
-        levelIndex++;
-      }
-      else if (levelIndex > 0 && LIFT_HEIGHTS[levelIndex] > Lift.position(degrees))
-      {
-        levelIndex--;
-      }
-    }
-    // Claw.setVelocity(Controller1.Axis4.position(percent) / 5, percent);
-
-    // cout << "Claw: " << Claw.position(degrees) << "\n";
-    // cout << levelIndex << "\n";
-    // cout << "Lift: " << Lift.position(degrees) << "\n";
+    drive();
+    moveLift();
+    moveClaw();
   }
 }
-
-
-
-
-
-
-
