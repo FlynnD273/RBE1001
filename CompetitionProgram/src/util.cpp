@@ -67,12 +67,12 @@ void openClawSmall ()
 
 void closeClaw ()
 {
-  Claw.rotateTo(100, degrees, 600, dps, false);
+  Claw.rotateTo(85, degrees, 600, dps, false);
 }
 
 void closeClawSlow()
 {
-  Claw.rotateTo(100,degrees,200,dps,false);
+  Claw.rotateTo(100,degrees,90,dps,false);
 }
 
 double speed = 20;
@@ -193,11 +193,6 @@ void WhiteLineTracking (bool isFwd)
     }
 }
 
-void RampToDorm()
-{ 
-  driveDistance(75, 250);
-}
-
 void DriveUntilWhite(bool isForwards)
 {
   float rL = LineTrackerB.reflectivity();
@@ -258,49 +253,4 @@ void turnToLine(int speed = 100)
   printf("reached end\n");
   Right.stop();
   Left.stop();
-}
-
-
-bool tryDetectObject(vex::vision::object& detectedObj, signature sig)
-{
-  //takes a snapshot and searches for sig_s1
-  //you’ll want to use the signature that you defined above
-  Vision15.takeSnapshot(sig);
-  detectedObj = Vision15.largestObject;
-  //print the coordinates of the center of the object
-  //printf stands for ’print formatted’ and the %d tells it to print
-  //in integer format. The syntax can be found in online tutorials.
-  if (Vision15.objectCount > 0)
-  {
-    return true;
-  }
-
-  return false;
-}
-
-
-trackColorState trackColor(signature sig, double width, double distance, double horizontalThreshold, double sizeThreshold)
-{
-  const double targetWidth = atan(width / 2 / distance) * RAD_TO_DEG / DEG_PER_PIX * 2;
-  vex::vision::object obj;
-  if (tryDetectObject(obj, sig) && obj.width > 2 && obj.height > 2)
-  {
-    const double rotationPower = (obj.centerX - CAM_WIDTH / 2) * K_PR;
-    const double drivePower = (targetWidth - obj.width) * K_PD;
-    Left.setVelocity(rotationPower + drivePower, rpm);
-    Right.setVelocity(-rotationPower + drivePower, rpm);
-
-    if (abs(obj.centerX - CAM_WIDTH / 2) < horizontalThreshold / 2 && abs(targetWidth - obj.width) < sizeThreshold)
-    {
-      return trackColorState::SUCCESSFUL;
-    }
-  }
-  else
-  {
-    Left.setVelocity(0, rpm);
-    Right.setVelocity(0, rpm);
-    return trackColorState::LOST;
-  }
-
-  return trackColorState::PENDING;
 }

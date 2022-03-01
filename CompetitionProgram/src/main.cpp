@@ -4,6 +4,29 @@
 // LineTrackerA         line          A               
 // LineTrackerB         line          F               
 // Claw                 motor         4               
+// Left                 motor_group   9, 10           
+// Right                motor_group   5, 3            
+// Lift                 motor_group   11, 20          
+// Controller1          controller                    
+// ---- END VEXCODE CONFIGURED DEVICES ----
+// ---- START VEXCODE CONFIGURED DEVICES ----
+// Robot Configuration:
+// [Name]               [Type]        [Port(s)]
+// LineTrackerA         line          A               
+// LineTrackerB         line          F               
+// Claw                 motor         4               
+// Vision15             vision        15              
+// Left                 motor_group   9, 10           
+// Right                motor_group   5, 3            
+// Lift                 motor_group   11, 20          
+// Controller1          controller                    
+// ---- END VEXCODE CONFIGURED DEVICES ----
+// ---- START VEXCODE CONFIGURED DEVICES ----
+// Robot Configuration:
+// [Name]               [Type]        [Port(s)]
+// LineTrackerA         line          A               
+// LineTrackerB         line          F               
+// Claw                 motor         4               
 // Vision15             vision        15              
 // Left                 motor_group   9, 10           
 // Right                motor_group   5, 3            
@@ -97,7 +120,7 @@ void pre_auton(void) {
   // Initializing Robot Configuration. DO NOT REMOVE!
   vexcodeInit();
   Lift.setStopping(hold);
-  Claw.setStopping(hold);
+  Claw.setStopping(brake);
   // All activities that occur before the competition starts
   // Example: clearing encoders, setting servo positions, ...
 }
@@ -119,16 +142,19 @@ void autonomous(void) {
   
   //Close claw and lift before driving up ramp
   closeClaw();
-  task::sleep(200);
+  task::sleep(800);
   liftToFloor(2);
   //Drive up ramp
   BlackLineTracking();
   //Drive up to dorm, open claw
-  RampToDorm();
+  driveDistance(73, 250);
+  Claw.stop();
   openClawSmall();
+  task::sleep(500);
   //Move backwards until we reach the white line
   DriveUntilWhite(false);
   openClaw();
+  
   //Move forwards to center the pivot, rotate onto the line
   driveDistance(11.8,150);
   Lift.rotateTo(400, degrees, 500, dps, false);
@@ -142,22 +168,29 @@ void autonomous(void) {
   //Open claw and drive forwards
   openClaw();
   task::sleep(100);
-  driveDistance(13, 90);
-  task::sleep(500);
+  // driveDistance(13, 90);
+  task::sleep(1000);
   //Close claw and drive backwards
   closeClawSlow();
-  task::sleep(100);
+  task::sleep(2000);
   // DriveUntilWhite(false);
-  driveDistance(-13, 90);
+  // driveDistance(-13, 90);
   //Center the pivot and turn onto the line
-  driveDistance(11.8,150);
+  driveDistance(-8,150);
+  liftToFloor(1);
+  task::sleep(500);
+  driveDistance(8,150);
+  driveDistance(-3,150);
   turn(30,130);
   turnToLine(70);
+  turn(-5,130);
   //Drive up to the dorm and turn to face it
-  driveDistance(87,100);
-  turn(90,100);
+  driveDistance(84,100);
   liftToFloor(3);
-  driveDistance(20,80);
+  turn(40,100);
+  driveDistance(-6,80);
+  turn(50, 100);
+  driveDistance(14,80);
   openClaw();
   //Drive backwards, orient the pivot, and move towards the line
   DriveUntilWhite(false);
@@ -166,8 +199,9 @@ void autonomous(void) {
   WhiteLineTracking(true);
   //Turns and drives
   liftToFloor(2);
-  turn(90,130);
-  driveDistance(100, 150);
+  openClawSmall();
+  turn(-100,130);
+  driveDistance(-125, 500);
 }
 
 /*---------------------------------------------------------------------------*/
