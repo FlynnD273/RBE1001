@@ -1,3 +1,63 @@
+// ---- START VEXCODE CONFIGURED DEVICES ----
+// Robot Configuration:
+// [Name]               [Type]        [Port(s)]
+// LineTrackerA         line          A               
+// LineTrackerB         line          F               
+// Claw                 motor         4               
+// Vision15             vision        15              
+// Left                 motor_group   9, 10           
+// Right                motor_group   5, 3            
+// Lift                 motor_group   11, 20          
+// Controller1          controller                    
+// ---- END VEXCODE CONFIGURED DEVICES ----
+// ---- START VEXCODE CONFIGURED DEVICES ----
+// Robot Configuration:
+// [Name]               [Type]        [Port(s)]
+// LineTrackerA         line          A               
+// LineTrackerB         line          E               
+// Claw                 motor         4               
+// Vision15             vision        15              
+// Left                 motor_group   9, 10           
+// Right                motor_group   5, 3            
+// Lift                 motor_group   11, 20          
+// Controller1          controller                    
+// ---- END VEXCODE CONFIGURED DEVICES ----
+// ---- START VEXCODE CONFIGURED DEVICES ----
+// Robot Configuration:
+// [Name]               [Type]        [Port(s)]
+// LineTrackerA         line          A               
+// LineTrackerB         line          E               
+// Claw                 motor         4               
+// Vision15             vision        15              
+// Left                 motor_group   9, 10           
+// Right                motor_group   5, 3            
+// Lift                 motor_group   11, 20          
+// Controller1          controller                    
+// ---- END VEXCODE CONFIGURED DEVICES ----
+// ---- START VEXCODE CONFIGURED DEVICES ----
+// Robot Configuration:
+// [Name]               [Type]        [Port(s)]
+// LineTrackerA         line          A               
+// LineTrackerE         line          E               
+// Claw                 motor         4               
+// Vision15             vision        15              
+// Left                 motor_group   9, 10           
+// Right                motor_group   5, 3            
+// Lift                 motor_group   11, 20          
+// Controller1          controller                    
+// ---- END VEXCODE CONFIGURED DEVICES ----
+// ---- START VEXCODE CONFIGURED DEVICES ----
+// Robot Configuration:
+// [Name]               [Type]        [Port(s)]
+// LineTrackerA         line          A               
+// LineTrackerB         line          B               
+// Claw                 motor         4               
+// Vision15             vision        15              
+// Left                 motor_group   9, 10           
+// Right                motor_group   5, 3            
+// Lift                 motor_group   11, 20          
+// Controller1          controller                    
+// ---- END VEXCODE CONFIGURED DEVICES ----
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
 /*    Module:       main.cpp                                                  */
@@ -36,7 +96,8 @@ competition Competition;
 void pre_auton(void) {
   // Initializing Robot Configuration. DO NOT REMOVE!
   vexcodeInit();
-
+  Lift.setStopping(hold);
+  Claw.setStopping(hold);
   // All activities that occur before the competition starts
   // Example: clearing encoders, setting servo positions, ...
 }
@@ -55,18 +116,57 @@ void autonomous(void) {
   // ..........................................................................
   // Insert autonomous user code here.
   // ..........................................................................
+  
+  //Close claw and lift before driving up ramp
   closeClaw();
+  task::sleep(200);
+  liftToFloor(2);
+  //Drive up ramp
+  BlackLineTracking();
+  //Drive up to dorm, open claw
+  RampToDorm();
   openClaw();
-  // liftToFloor(2);
-  // BlackLineTracking();
-  // RampToDorm();
-  // DriveUntilWhite(false);
-  // driveDistance(2,150);
-  // turn(40, 150);
-  // WhiteLineTracking();
-  // liftToFloor(3);
-  // driveDistance(7,150);
-  // turn(90,150);
+  //Move backwards until we reach the white line
+  DriveUntilWhite(false);
+  openClaw();
+  //Move forwards to center the pivot, rotate onto the line
+  driveDistance(11.8,150);
+  Lift.rotateTo(407, degrees, 500, dps, false);
+  turnToLine(70);
+  //Drive until the intersection
+  WhiteLineTracking(true);
+  //Center the pivot and turn
+  driveDistance(15,130);
+  turn(30, 130);
+  turnToLine(70);
+  //Open claw and drive forwards
+  openClawSmall();
+  task::sleep(100);
+  driveDistance(13, 90);
+  task::sleep(500);
+  //Close claw and drive backwards
+  closeClawSlow();
+  task::sleep(100);
+  DriveUntilWhite(false);
+  //Center the pivot and turn onto the line
+  driveDistance(11.8,150);
+  turn(30,130);
+  turnToLine(70);
+  //Drive up to the dorm and turn to face it
+  driveDistance(87,100);
+  turn(90,100);
+  liftToFloor(3);
+  driveDistance(20,80);
+  openClaw();
+  //Drive backwards, orient the pivot, and move towards the line
+  DriveUntilWhite(false);
+  driveDistance(11.8, 150);
+  turnToLine(-70);
+  WhiteLineTracking(true);
+  //Turns and drives
+  liftToFloor(2);
+  turn(90,130);
+  driveDistance(100, 150);
 }
 
 /*---------------------------------------------------------------------------*/
@@ -80,11 +180,10 @@ void autonomous(void) {
 /*---------------------------------------------------------------------------*/
 
 void usercontrol(void) {
+  autonomous();
   // User control code here, inside the loop
   Left.spin(fwd);
   Right.spin(fwd);
-  Lift.setStopping(hold);
-  Claw.setStopping(hold);
   while (1) {
     // This is the main execution loop for the user control program.
     // Each time through the loop your program should update motor + servo

@@ -19,17 +19,21 @@ void openClaw();
 
 void closeClaw();
 
-void openClawL();
+void openClawSmall();
+
+void closeClawSlow();
 
 void DetermineEffort();
 
 void BlackLineTracking();
 
-void WhiteLineTracking();
+void WhiteLineTracking(bool);
 
 void RampToDorm();
 
 void DriveUntilWhite(bool isForwards);
+
+void turnToLine(int);
 
 bool tryDetectObject(vex::vision::object&, vex::vision::signature);
 

@@ -16,7 +16,6 @@ extern signature Vision15__SIG_5;
 extern signature Vision15__SIG_6;
 extern signature Vision15__SIG_7;
 extern vision Vision15;
-extern sonar RangeFinderE;
 extern motor_group Left;
 extern motor_group Right;
 extern motor_group Lift;

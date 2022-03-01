@@ -60,7 +60,7 @@ void openClaw ()
   Claw.rotateTo(0, degrees, 600, dps, false);
 }
 
-void openClawL ()
+void openClawSmall ()
 {
   Claw.rotateTo(70, degrees, 600, dps, false);
 }
@@ -68,6 +68,11 @@ void openClawL ()
 void closeClaw ()
 {
   Claw.rotateTo(100, degrees, 600, dps, false);
+}
+
+void closeClawSlow()
+{
+  Claw.rotateTo(100,degrees,200,dps,false);
 }
 
 double speed = 20;
@@ -84,7 +89,25 @@ double DetermineEffort(double actual)
 
 void BlackLineTracking ()
 { 
+    Left.spin(fwd);
+    Right.spin(fwd);
     while(true)
+    {
+      task::sleep(100);
+      float rL = LineTrackerB.reflectivity();
+      float rR = LineTrackerA.reflectivity(); 
+      //cout << "A is " << rR << endl;
+      //cout << "B is " << rL << endl;
+    
+        const double K_P { 2 };
+        const double BASE_SPEED { 10 };
+        const int THRESHOLD { 12 };
+        Left.setVelocity(rL * K_P + BASE_SPEED, rpm);
+        Right.setVelocity(rR * K_P + BASE_SPEED, rpm);
+        if(rR < THRESHOLD && rL < THRESHOLD)
+          break;
+    }
+    /*while(true)
     {
       task::sleep(100);
        
@@ -114,48 +137,65 @@ void BlackLineTracking ()
           Left.stop();
           break;
         }
-    }
+    }*/
 }
 
-void WhiteLineTracking ()
+void WhiteLineTracking (bool isFwd)
 { 
+    Left.spin(fwd);
+    Right.spin(fwd);
+    if(!isFwd)
+    {
+      Left.spin(reverse);
+      Right.spin(reverse);
+    }
     while(true)
     {
       task::sleep(100);
       float rL = LineTrackerB.reflectivity();
       float rR = LineTrackerA.reflectivity(); 
+      if(!isFwd)
+      {
+        rR = LineTrackerB.reflectivity();
+        rL = LineTrackerA.reflectivity(); 
+      }
       //cout << "A is " << rR << endl;
       //cout << "B is " << rL << endl;
     
-        if(rR < 12 && rL < 12)
+        const double K_P { 2.6 };
+        const double BASE_SPEED { 37 };
+        const int THRESHOLD { 12 };
+        Left.setVelocity(-rL * K_P + BASE_SPEED, rpm);
+        Right.setVelocity(-rR * K_P + BASE_SPEED, rpm);
+        /*if(rR < 12 && rL < 12)
         {
             Left.spin(fwd, speed, rpm);
             Right.spin(fwd, speed, rpm);
         }
         else if(rR < 12)
         {
-            Left.spin(reverse, speed/2 + DetermineEffort(rL), rpm);
-            Right.spin(fwd, speed/2.5 + DetermineEffort(rR), rpm);
+            Left.spin(reverse, speed/1.5 + DetermineEffort(rL), rpm);
+            //Right.spin(fwd, speed/3 + DetermineEffort(rR), rpm);
         }
         else if(rL < 12)
         {
-            Right.spin(reverse, speed/2 + DetermineEffort(rR), rpm);
-            Left.spin(fwd, speed/2.5 + DetermineEffort(rL), rpm);
+            Right.spin(reverse, speed/1.5 + DetermineEffort(rR), rpm);
+            //Left.spin(fwd, speed/3 + DetermineEffort(rL), rpm);
         }
         else
         { 
           Right.stop();
           Left.stop();
           break;
-        }
+        }*/
+        if(rR > THRESHOLD && rL > THRESHOLD)
+          break;
     }
 }
 
 void RampToDorm()
 { 
   driveDistance(75, 250);
-  openClawL();
-        
 }
 
 void DriveUntilWhite(bool isForwards)
@@ -183,6 +223,43 @@ void DriveUntilWhite(bool isForwards)
   Right.stop();
   Left.stop();
 }
+
+void turnToLine(int speed = 100)
+{ 
+  int rL = LineTrackerB.reflectivity();
+  int rR = LineTrackerA.reflectivity(); 
+  if(speed > 0)
+  {
+    printf("in if statemernt\n");
+    printf("left line sensor: %i\n", rL);
+    task::sleep(420);
+    Left.spin(forward, speed, dps);
+    Right.spin(reverse, speed, dps);
+    do
+    {
+      rL = LineTrackerB.reflectivity();
+      printf("Reached while loop\n");
+      printf("linesensor value %i\n", rL);
+      task::sleep(10);
+    } while(rL < 10);
+  } 
+  else 
+  {
+    printf("in else statemernt\n");
+    Left.spin(reverse, -speed, dps);
+    Right.spin(forward, -speed, dps);
+    while(rR < 10) 
+    {
+      printf("%i\n", rR);
+      rR = LineTrackerA.reflectivity(); 
+      task::sleep(100);
+    }
+  }
+  printf("reached end\n");
+  Right.stop();
+  Left.stop();
+}
+
 
 bool tryDetectObject(vex::vision::object& detectedObj, signature sig)
 {

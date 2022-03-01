@@ -9,12 +9,11 @@ brain  Brain;
 
 // VEXcode device constructors
 line LineTrackerA = line(Brain.ThreeWirePort.A);
-line LineTrackerB = line(Brain.ThreeWirePort.B);
+line LineTrackerB = line(Brain.ThreeWirePort.F);
 motor Claw = motor(PORT4, ratio18_1, true);
 /*vex-vision-config:begin*/
 vision Vision15 = vision (PORT15, 50);
 /*vex-vision-config:end*/
-sonar RangeFinderE = sonar(Brain.ThreeWirePort.E);
 motor LeftMotorA = motor(PORT9, ratio18_1, false);
 motor LeftMotorB = motor(PORT10, ratio18_1, false);
 motor_group Left = motor_group(LeftMotorA, LeftMotorB);
