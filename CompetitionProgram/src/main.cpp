@@ -125,13 +125,13 @@ void autonomous(void) {
   BlackLineTracking();
   //Drive up to dorm, open claw
   RampToDorm();
-  openClaw();
+  openClawSmall();
   //Move backwards until we reach the white line
   DriveUntilWhite(false);
   openClaw();
   //Move forwards to center the pivot, rotate onto the line
   driveDistance(11.8,150);
-  Lift.rotateTo(407, degrees, 500, dps, false);
+  Lift.rotateTo(400, degrees, 500, dps, false);
   turnToLine(70);
   //Drive until the intersection
   WhiteLineTracking(true);
@@ -140,14 +140,15 @@ void autonomous(void) {
   turn(30, 130);
   turnToLine(70);
   //Open claw and drive forwards
-  openClawSmall();
+  openClaw();
   task::sleep(100);
   driveDistance(13, 90);
   task::sleep(500);
   //Close claw and drive backwards
   closeClawSlow();
   task::sleep(100);
-  DriveUntilWhite(false);
+  // DriveUntilWhite(false);
+  driveDistance(-13, 90);
   //Center the pivot and turn onto the line
   driveDistance(11.8,150);
   turn(30,130);
