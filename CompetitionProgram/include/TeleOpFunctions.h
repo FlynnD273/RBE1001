@@ -1,4 +1,4 @@
 void manualLift();
-void moveLift ();
+void moveLift();
 void moveClaw();
 void drive();

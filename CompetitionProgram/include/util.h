@@ -23,20 +23,10 @@ void openClawSmall();
 
 void closeClawSlow();
 
-void DetermineEffort();
-
 void BlackLineTracking();
 
-void WhiteLineTracking(bool);
+void WhiteLineTracking();
 
-void RampToDorm();
-
-void DriveUntilWhite(bool isForwards);
+void DriveBackwardsUntilWhite();
 
 void turnToLine(int);
-
-bool tryDetectObject(vex::vision::object&, vex::vision::signature);
-
-enum trackColorState {SUCCESSFUL, PENDING, LOST};
-
-trackColorState trackColor(vex::vision::signature, double, double, double, double);

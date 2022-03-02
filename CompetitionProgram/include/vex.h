@@ -17,7 +17,7 @@
 
 #include "robot-config.h"
 #include "util.h"
-#include "RobotFunctions.h"
+#include "TeleOpFunctions.h"
 
 #define waitUntil(condition)                                                   \
   do {                                                                         \
