@@ -150,7 +150,7 @@ void autonomous(void) {
   driveDistance(73, 250);
   Claw.stop();
   openClawSmall();
-  task::sleep(500);
+  task::sleep(1000);
   //Move backwards until we reach the white line
   DriveUntilWhite(false);
   openClaw();
@@ -215,7 +215,6 @@ void autonomous(void) {
 /*---------------------------------------------------------------------------*/
 
 void usercontrol(void) {
-  autonomous();
   // User control code here, inside the loop
   Left.spin(fwd);
   Right.spin(fwd);
